@@ -14,39 +14,53 @@ static class Program
     }
 
 	static ArgMode argMode = ArgMode.None;
+	static readonly Project project = new();
 
-    static void Main(string[] args)
+	static void Main(string[] args)
 	{
-		Project project = new Project();
-
 		if (args[0].ToLower() == "build")
 		{
-			foreach (string arg in args)
-			{
-				switch (arg.ToLower()) {
-					case "debug":
-						project.BuildType = BuildType.Debug;
-						continue;
-					case "release":
-						project.BuildType = BuildType.Release;
-						continue;
-					case "-p":
-						argMode = ArgMode.ProjPath;
-
-						continue;
-					default:
-						switch (argMode)
-						{
-							case ArgMode.ProjPath:
-								project.ProjectDir = arg;
-								argMode = ArgMode.None;
-								continue;
-						}
-						continue;
-				}
-			}
+			handleArgs(args.Skip(1).ToArray());
 
 			project.Build();
+		}
+        else if (args[0].ToLower() == "test")
+		{
+			handleArgs(args.Skip(1).ToArray());
+
+			project.Build();
+			project.Test();
+		}
+    }
+
+	static private void handleArgs(string[] args)
+	{
+		foreach (string arg in args)
+		{
+			switch (arg.ToLower())
+			{
+				case "debug":
+					project.BuildType = BuildType.Debug;
+					continue;
+
+				case "release":
+					project.BuildType = BuildType.Release;
+					continue;
+
+				case "-p":
+					argMode = ArgMode.ProjPath;
+					continue;
+
+				default:
+					switch (argMode)
+					{
+						case ArgMode.ProjPath:
+							project.ProjectDir = arg;
+							argMode = ArgMode.None;
+							continue;
+					}
+					continue;
+			}
 		}
 	}
 }
