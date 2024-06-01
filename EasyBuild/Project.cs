@@ -3,6 +3,7 @@
 ///file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System.IO;
+using System.Text.Json;
 
 namespace EasyBuild
 {
@@ -24,6 +25,19 @@ namespace EasyBuild
 
 		public int Build()
 		{
+			PreBuild();
+
+			return 0;
+		}
+
+		public int Test()
+		{
+			return 0;
+		}
+
+		private bool PreBuild()
+		{
+			Console.WriteLine("Starting PreBuild...");
 
 			try
 			{
@@ -36,7 +50,7 @@ namespace EasyBuild
 			catch
 			{
 				Console.WriteLine("PreBuild failed, invalid project directory: " + ProjectDir!);
-				return 1;
+				return false;
 			}
 
 			foreach (string file in files)
@@ -52,15 +66,12 @@ namespace EasyBuild
 			if (BuildFile is null)
 			{
 				Console.WriteLine("PreBuild failed, easybuild.json not found in project directory: " + ProjectDir!);
-				return 1;
+				return false;
 			}
 
-			return 0;
-		}
 
-		public int Test()
-		{
-			return 0;
+
+			return true;
 		}
 	}
 }
