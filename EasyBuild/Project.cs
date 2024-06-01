@@ -40,7 +40,7 @@ namespace EasyBuild
 
 			foreach (string file in files)
 			{
-				if (file.ToLower() == "build.easybuild")
+				if (file.ToLower() == "easybuild.json")
 				{
 					BuildFile = file;
 				}
@@ -48,10 +48,15 @@ namespace EasyBuild
 
 			if (BuildFile is null)
 			{
-				Console.WriteLine("PreBuild failed, build.easybuild not found in project directory: " + ProjectDir!);
+				Console.WriteLine("PreBuild failed, easybuild.json not found in project directory: " + ProjectDir!);
 				return 1;
 			}
 
+			return 0;
+		}
+
+		public int Test()
+		{
 			return 0;
 		}
 	}
