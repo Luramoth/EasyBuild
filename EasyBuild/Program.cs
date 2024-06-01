@@ -16,6 +16,8 @@ static class Program
 	static ArgMode argMode = ArgMode.None;
 	static readonly Project project = new();
 
+	public const string Version = "Alpha6.24";
+
 	static void Main(string[] args)
 	{
 		if (args.Length == 0)
@@ -78,7 +80,7 @@ static class Program
 
 	static private void PrintVersion()
 	{
-		Console.WriteLine("\nEasyBuild version Alpha6.24");
+		Console.WriteLine("\nEasyBuild version " + Version);
 		Console.WriteLine("A program to make building your projects easy\n");
 		Console.WriteLine("This program is Liscenced under the Mozilla Public License, v. 2.0");
 		Console.WriteLine("If the MPL was not distributed with your copy of EasyBuild, you can obtain one at http://mozilla.org/MPL/2.0/.\n");
