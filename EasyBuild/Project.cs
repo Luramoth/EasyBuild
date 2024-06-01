@@ -40,7 +40,7 @@ namespace EasyBuild
 
 			foreach (string file in files)
 			{
-				if (file.ToLower() == "easybuild.json")
+				if (file.Equals("easybuild.json", StringComparison.CurrentCultureIgnoreCase))
 				{
 					BuildFile = file;
 				}
