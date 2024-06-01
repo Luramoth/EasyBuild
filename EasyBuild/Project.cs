@@ -20,9 +20,10 @@ namespace EasyBuild
 
 		private string? BuildFile;
 
+		private string[]? files;
+
 		public int Build()
 		{
-			string[] files;
 
 			try
 			{
@@ -34,13 +35,15 @@ namespace EasyBuild
 			}
 			catch
 			{
-				Console.WriteLine("PreBuild failed, invalid project directory: " + Path.GetFullPath(ProjectDir!));
+				Console.WriteLine("PreBuild failed, invalid project directory: " + ProjectDir!);
 				return 1;
 			}
 
 			foreach (string file in files)
 			{
-				if (file.Equals("easybuild.json", StringComparison.CurrentCultureIgnoreCase))
+				string filename = Path.GetFileName(file);
+
+				if (filename.Equals("easybuild.json", StringComparison.CurrentCultureIgnoreCase))
 				{
 					BuildFile = file;
 				}

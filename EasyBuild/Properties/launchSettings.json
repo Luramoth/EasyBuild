@@ -2,7 +2,7 @@
   "profiles": {
     "EasyBuild": {
       "commandName": "Project",
-      "commandLineArgs": "build release -p ./"
+      "commandLineArgs": "build release -p C:\\Users\\Lura\\Documents\\Dev\\CPP\\EasyBuild\\Sandbox"
     }
   }
 }
