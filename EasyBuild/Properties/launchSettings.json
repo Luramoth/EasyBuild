@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "EasyBuild": {
+      "commandName": "Project",
+      "commandLineArgs": "build release -p ./"
+    }
+  }
+}
