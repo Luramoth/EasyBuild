@@ -18,13 +18,13 @@ static class Program
 
 	static void Main(string[] args)
 	{
-		if (args[0].ToLower() == "build")
+		if (args[0].Equals("build", StringComparison.CurrentCultureIgnoreCase))
 		{
 			handleArgs(args.Skip(1).ToArray());
 
 			project.Build();
 		}
-        else if (args[0].ToLower() == "test")
+        else if (args[0].Equals("test", StringComparison.CurrentCultureIgnoreCase))
 		{
 			handleArgs(args.Skip(1).ToArray());
 
