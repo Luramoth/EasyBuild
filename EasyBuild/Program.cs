@@ -20,20 +20,20 @@ static class Program
 	{
 		if (args[0].Equals("build", StringComparison.CurrentCultureIgnoreCase))
 		{
-			handleArgs(args.Skip(1).ToArray());
+			HandleArgs(args.Skip(1).ToArray());
 
 			project.Build();
 		}
         else if (args[0].Equals("test", StringComparison.CurrentCultureIgnoreCase))
 		{
-			handleArgs(args.Skip(1).ToArray());
+			HandleArgs(args.Skip(1).ToArray());
 
 			project.Build();
 			project.Test();
 		}
     }
 
-	static private void handleArgs(string[] args)
+	static private void HandleArgs(string[] args)
 	{
 		foreach (string arg in args)
 		{
