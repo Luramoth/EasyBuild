@@ -17,6 +17,7 @@ namespace EasyBuild
 	internal class Project
 	{
 		public string? ProjectDir;
+		public string? ProjectName;
 
 		public BuildType BuildType;
 
@@ -113,7 +114,10 @@ namespace EasyBuild
 			}
 
 			// Get project name
-			if ((string?)JsonNode.Parse(BuildFile)["Name"] is null)
+
+			ProjectName = (string?)JsonNode.Parse(BuildFile)["Name"];
+
+			if (ProjectName is null)
 			{
 				Console.WriteLine("Project name not found in easybuild.json, Terminating...");
 				Console.WriteLine("Hint: Dont be modest! Add {\"Name\": \"" + Path.GetFileName(ProjectDir) + "\"} to the root of your easybuild.json file!");
