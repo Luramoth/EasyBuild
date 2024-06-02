@@ -139,7 +139,8 @@ namespace EasyBuild
 			string? srcDirStr = (string?)JsonNode.Parse(BuildFile)["SourceDir"];
 			if (srcDirStr is null)
 			{
-				log.Error("Source directory is invalid, Terminating...");
+				log.Error("Source directory not found in easybuild.json, Terminating...");
+				log.Info("Hint: Add {\"SourceDir\": \"./src/\"} to the root of your easybuild.json file!");
 
 				return false;
 			}
