@@ -16,7 +16,7 @@ static class Program
 	static ArgMode argMode = ArgMode.None;
 	static readonly Project project = new();
 
-	public const string Version = "Alpha6.24";
+	public const float Version = 6.24f;
 
 	static void Main(string[] args)
 	{
