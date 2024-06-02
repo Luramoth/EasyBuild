@@ -25,7 +25,11 @@ namespace EasyBuild
 
 		public int Build()
 		{
-			PreBuild();
+			if (!PreBuild())
+			{
+				Console.WriteLine("Prebuild Failed, exiting...");
+				return 1;
+			}
 
 			return 0;
 		}
@@ -49,7 +53,7 @@ namespace EasyBuild
 			}
 			catch
 			{
-				Console.WriteLine("PreBuild failed, invalid project directory: " + ProjectDir!);
+				Console.WriteLine("invalid project directory: " + ProjectDir!);
 				return false;
 			}
 
@@ -60,12 +64,14 @@ namespace EasyBuild
 				if (filename.Equals("easybuild.json", StringComparison.CurrentCultureIgnoreCase))
 				{
 					BuildFile = file;
+
+					break;
 				}
 			}
 
 			if (BuildFile is null)
 			{
-				Console.WriteLine("PreBuild failed, easybuild.json not found in project directory: " + ProjectDir!);
+				Console.WriteLine("easybuild.json not found in project directory: " + ProjectDir!);
 				return false;
 			}
 
