@@ -1,4 +1,5 @@
 {
 	"EBversion": 6.24,
-	"Name": "sandbox"
+	"Name": "sandbox",
+	"SourceDir": "./src/"
 }

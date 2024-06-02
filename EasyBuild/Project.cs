@@ -25,6 +25,8 @@ namespace EasyBuild
 		private string? BuildFile;
 		private string[]? files;
 		private string? executible;
+		private string? sourceDirectory;
+		private string[]? sourceFiles;
 
 
 		public Project()
@@ -131,6 +133,46 @@ namespace EasyBuild
 			} else if (ProjectName != ProjectName.ToLower())
 			{
 				log.Warn("Project name valid! Fully lowercase name reccomended");
+			}
+
+			// Get source files
+			string? srcDirStr = (string?)JsonNode.Parse(BuildFile)["SourceDir"];
+			if (srcDirStr is null)
+			{
+				log.Error("Source directory is invalid, Terminating...");
+
+				return false;
+			}
+			else
+			{
+				sourceDirectory = Path.GetFullPath(srcDirStr!);
+
+				try
+				{
+					sourceFiles = Directory.GetFiles(sourceDirectory);
+				} catch
+				{
+					log.Error("Source directory invalid, Terminating...");
+
+					return false;
+				}
+
+				if (sourceFiles.Length == 0)
+				{
+					log.Error("Source directory empty, Terminating...");
+					return false;
+				}
+				else
+				{
+					foreach (string file in sourceFiles)
+					{
+						if (Path.GetFileName(file).Equals("easybuild.json", StringComparison.CurrentCultureIgnoreCase))
+						{
+							log.Warn("Source directory valid, please keep seperate from project root!");
+							log.Info("Hint: put source files inside a folder like [./src/]");
+						}
+					}
+				}
 			}
 
 			return true;
