@@ -4,6 +4,8 @@
 
 using System.IO;
 using System.Text.Json;
+using System.Diagnostics;
+using System.Text;
 
 namespace EasyBuild
 {
@@ -23,6 +25,8 @@ namespace EasyBuild
 
 		private string[]? files;
 
+		private string? executible;
+
 		public int Build()
 		{
 			if (!PreBuild())
@@ -36,6 +40,18 @@ namespace EasyBuild
 
 		public int Test()
 		{
+			ProcessStartInfo start = new();
+			start.Arguments = "";
+			start.FileName = executible!;
+			start.WindowStyle = ProcessWindowStyle.Normal;
+			start.CreateNoWindow = false;
+			int exitCode;
+
+			Process? activeProcess = Process.Start(start);
+			using Process process = activeProcess!;
+			process!.WaitForExit();
+			exitCode = process.ExitCode;
+
 			return 0;
 		}
 
