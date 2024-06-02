@@ -3,9 +3,8 @@
 ///file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System.IO;
-using System.Text.Json;
 using System.Diagnostics;
-using System.Text;
+using System.Text.Json.Nodes;
 
 namespace EasyBuild
 {
@@ -59,6 +58,7 @@ namespace EasyBuild
 		{
 			Console.WriteLine("Starting PreBuild...");
 
+			// see if project root is an actual directory
 			try
 			{
 				ProjectDir = Path.GetFullPath(ProjectDir!);
@@ -73,13 +73,14 @@ namespace EasyBuild
 				return false;
 			}
 
+			// see if thers a easybuild.json file in project root
 			foreach (string file in files)
 			{
 				string filename = Path.GetFileName(file);
 
 				if (filename.Equals("easybuild.json", StringComparison.CurrentCultureIgnoreCase))
 				{
-					BuildFile = file;
+					BuildFile = File.ReadAllText(file);
 
 					break;
 				}
@@ -92,6 +93,33 @@ namespace EasyBuild
 			}
 
 
+			// Check is version is valid
+			if ((float?)JsonNode.Parse(BuildFile)["EBversion"] < Program.Version)
+			{
+				Console.WriteLine("Newer version of EasyBuild required, Please update");
+				Console.WriteLine("Hint: your project doesent always need the latest version of EasyBuild! lower the version if you dont use the latest features");
+
+				return false;
+
+			} else if ((float?)JsonNode.Parse(BuildFile)["EBversion"] is null)
+			{
+				Console.WriteLine("EasyBuild required version not found in easybuild.json, Terminating...");
+				Console.WriteLine("Hint: Add {\"EBversion\": " + Program.Version + "} to the root of your easybuild.json file!");
+
+				return false;
+			} else
+			{
+				Console.WriteLine("EasyBuild Version Valid, Continuing...");
+			}
+
+			// Get project name
+			if ((string?)JsonNode.Parse(BuildFile)["Namme"] is null)
+			{
+				Console.WriteLine("Project name not found in easybuild.json, Terminating...");
+				Console.WriteLine("Hint: Dont be modest! Add {\"Name\": \"" + Path.GetFileName(ProjectDir) + "\"} to the root of your easybuild.json file!");
+
+				return false;
+			}
 
 			return true;
 		}
