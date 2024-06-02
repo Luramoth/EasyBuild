@@ -2,9 +2,10 @@
 ///License, v. 2.0. If a copy of the MPL was not distributed with this
 ///file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-using System.IO;
 using System.Diagnostics;
 using System.Text.Json.Nodes;
+using log4net;
+using log4net.Config;
 
 namespace EasyBuild
 {
@@ -18,20 +19,24 @@ namespace EasyBuild
 	{
 		public string? ProjectDir;
 		public string? ProjectName;
-
 		public BuildType BuildType;
+		public static readonly ILog log = LogManager.GetLogger(typeof(Project));
 
 		private string? BuildFile;
-
 		private string[]? files;
-
 		private string? executible;
+
+
+		public Project()
+		{
+			XmlConfigurator.Configure(new FileInfo("LoggerConfig.xml"));
+		}
 
 		public int Build()
 		{
 			if (!PreBuild())
 			{
-				Console.WriteLine("Prebuild Failed, exiting...");
+				log.Fatal("Prebuild Failed, exiting...");
 				return 1;
 			}
 
@@ -57,7 +62,7 @@ namespace EasyBuild
 
 		private bool PreBuild()
 		{
-			Console.WriteLine("Starting PreBuild...");
+			log.Info("Starting PreBuild...");
 
 			// see if project root is an actual directory
 			try
@@ -70,7 +75,7 @@ namespace EasyBuild
 			}
 			catch
 			{
-				Console.WriteLine("invalid project directory: " + ProjectDir!);
+				log.Error("invalid project directory: " + ProjectDir!);
 				return false;
 			}
 
@@ -89,7 +94,7 @@ namespace EasyBuild
 
 			if (BuildFile is null)
 			{
-				Console.WriteLine("easybuild.json not found in project directory: " + ProjectDir!);
+				log.Error("easybuild.json not found in project directory: " + ProjectDir!);
 				return false;
 			}
 
@@ -97,20 +102,20 @@ namespace EasyBuild
 			// Check is version is valid
 			if ((float?)JsonNode.Parse(BuildFile)["EBversion"] < Program.Version)
 			{
-				Console.WriteLine("Newer version of EasyBuild required, Please update");
-				Console.WriteLine("Hint: your project doesent always need the latest version of EasyBuild! lower the version if you dont use the latest features");
+				log.Error("Newer version of EasyBuild required, Please update");
+				log.Info("Hint: your project doesent always need the latest version of EasyBuild! lower the version if you dont use the latest features");
 
 				return false;
 
 			} else if ((float?)JsonNode.Parse(BuildFile)["EBversion"] is null)
 			{
-				Console.WriteLine("EasyBuild required version not found in easybuild.json, Terminating...");
-				Console.WriteLine("Hint: Add {\"EBversion\": " + Program.Version + "} to the root of your easybuild.json file!");
+				log.Error("EasyBuild required version not found in easybuild.json, Terminating...");
+				log.Info("Hint: Add {\"EBversion\": " + Program.Version + "} to the root of your easybuild.json file!");
 
 				return false;
 			} else
 			{
-				Console.WriteLine("EasyBuild Version Valid, Continuing...");
+				log.Info("EasyBuild Version Valid, Continuing...");
 			}
 
 			// Get project name
@@ -119,10 +124,13 @@ namespace EasyBuild
 
 			if (ProjectName is null)
 			{
-				Console.WriteLine("Project name not found in easybuild.json, Terminating...");
-				Console.WriteLine("Hint: Dont be modest! Add {\"Name\": \"" + Path.GetFileName(ProjectDir) + "\"} to the root of your easybuild.json file!");
+				log.Error("Project name not found in easybuild.json, Terminating...");
+				log.Info("Hint: Dont be modest! Add {\"Name\": \"" + Path.GetFileName(ProjectDir) + "\"} to the root of your easybuild.json file!");
 
 				return false;
+			} else if (ProjectName != ProjectName.ToLower())
+			{
+				log.Warn("Project name valid! Fully lowercase name reccomended");
 			}
 
 			return true;
